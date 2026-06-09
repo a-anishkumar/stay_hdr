@@ -24,5 +24,6 @@ class HydraFlowApplication : Application() {
         weatherService = MockWeatherService()
         recommendationEngine = RecommendationEngine()
         repository = WaterRepository(this, database.hydraDao(), weatherService)
+        repository.scheduleReminder()
     }
 }

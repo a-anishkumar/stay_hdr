@@ -45,6 +45,8 @@ fun SettingsScreen(
     // Smart notifications config state from ViewModel
     val remindersEnabled by dashboardViewModel.remindersEnabled.collectAsState()
     val reminderInterval by dashboardViewModel.reminderInterval.collectAsState()
+    val reminderStartHour by dashboardViewModel.reminderStartHour.collectAsState()
+    val reminderEndHour by dashboardViewModel.reminderEndHour.collectAsState()
 
     val dashboardState by dashboardViewModel.uiState.collectAsState()
     val googleAccounts = dashboardViewModel.googleAccounts
@@ -439,6 +441,41 @@ fun SettingsScreen(
                                 onValueChange = { dashboardViewModel.setReminderInterval(it) },
                                 valueRange = 0.5f..5.0f
                             )
+                            
+                            HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), modifier = Modifier.padding(vertical = 4.dp))
+                            
+                            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text("Active Hours Range:", fontSize = 13.sp)
+                                    Text(
+                                        text = "${formatHour(reminderStartHour)} - ${formatHour(reminderEndHour)}", 
+                                        fontWeight = FontWeight.Black, 
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontSize = 15.sp
+                                    )
+                                }
+                                
+                                var sliderRange by remember(reminderStartHour, reminderEndHour) {
+                                    mutableStateOf(reminderStartHour.toFloat()..reminderEndHour.toFloat())
+                                }
+                                
+                                RangeSlider(
+                                    value = sliderRange,
+                                    onValueChange = { range ->
+                                        sliderRange = range
+                                    },
+                                    onValueChangeFinished = {
+                                        dashboardViewModel.setReminderStartHour(sliderRange.start.toInt())
+                                        dashboardViewModel.setReminderEndHour(sliderRange.endInclusive.toInt())
+                                    },
+                                    valueRange = 0f..23f,
+                                    steps = 22
+                                )
+                            }
                         }
                     }
                 }
@@ -701,5 +738,14 @@ fun SettingsScreen(
                 }
             }
         )
+    }
+}
+
+private fun formatHour(hour: Int): String {
+    return when {
+        hour == 0 -> "12 AM"
+        hour < 12 -> "$hour AM"
+        hour == 12 -> "12 PM"
+        else -> "${hour - 12} PM"
     }
 }

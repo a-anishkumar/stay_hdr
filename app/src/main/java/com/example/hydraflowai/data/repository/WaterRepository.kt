@@ -64,10 +64,52 @@ class WaterRepository(
 
     // Reminders Configuration
     fun isRemindersEnabled(): Boolean = prefs.getBoolean("reminders_enabled", true)
-    fun setRemindersEnabled(enabled: Boolean) = prefs.edit().putBoolean("reminders_enabled", enabled).apply()
+    fun setRemindersEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean("reminders_enabled", enabled).apply()
+        scheduleReminder()
+    }
     
     fun getReminderIntervalHours(): Float = prefs.getFloat("reminder_interval", 2.0f)
-    fun setReminderIntervalHours(hours: Float) = prefs.edit().putFloat("reminder_interval", hours).apply()
+    fun setReminderIntervalHours(hours: Float) {
+        prefs.edit().putFloat("reminder_interval", hours).apply()
+        scheduleReminder()
+    }
+
+    fun getReminderStartHour(): Int = prefs.getInt("reminder_start_hour", 6)
+    fun setReminderStartHour(hour: Int) {
+        prefs.edit().putInt("reminder_start_hour", hour).apply()
+        scheduleReminder()
+    }
+
+    fun getReminderEndHour(): Int = prefs.getInt("reminder_end_hour", 21)
+    fun setReminderEndHour(hour: Int) {
+        prefs.edit().putInt("reminder_end_hour", hour).apply()
+        scheduleReminder()
+    }
+
+    fun scheduleReminder() {
+        val enabled = isRemindersEnabled()
+        val manager = androidx.work.WorkManager.getInstance(context)
+        
+        if (!enabled) {
+            manager.cancelUniqueWork("StayHydratedReminder")
+            return
+        }
+        
+        val intervalHours = getReminderIntervalHours()
+        val intervalMinutes = (intervalHours * 60).toLong().coerceAtLeast(15) // Min 15 mins for WorkManager
+        
+        val workRequest = androidx.work.PeriodicWorkRequestBuilder<ReminderWorker>(
+            intervalMinutes, java.util.concurrent.TimeUnit.MINUTES
+        )
+        .build()
+        
+        manager.enqueueUniquePeriodicWork(
+            "StayHydratedReminder",
+            androidx.work.ExistingPeriodicWorkPolicy.UPDATE,
+            workRequest
+        )
+    }
 
     // Google Sign-In Configuration
     fun isGoogleLoggedIn(): Boolean = prefs.getBoolean("google_is_logged_in", false)

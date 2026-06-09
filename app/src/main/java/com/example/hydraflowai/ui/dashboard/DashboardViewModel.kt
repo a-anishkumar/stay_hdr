@@ -70,6 +70,12 @@ class DashboardViewModel(
     private val _reminderInterval = MutableStateFlow(repository.getReminderIntervalHours())
     val reminderInterval = _reminderInterval.asStateFlow()
 
+    private val _reminderStartHour = MutableStateFlow(repository.getReminderStartHour())
+    val reminderStartHour = _reminderStartHour.asStateFlow()
+
+    private val _reminderEndHour = MutableStateFlow(repository.getReminderEndHour())
+    val reminderEndHour = _reminderEndHour.asStateFlow()
+
     fun addPreset(name: String, ml: Int) {
         repository.addCustomPreset(name, ml)
         _presets.value = repository.getCustomPresets()
@@ -88,6 +94,16 @@ class DashboardViewModel(
     fun setReminderInterval(hours: Float) {
         repository.setReminderIntervalHours(hours)
         _reminderInterval.value = hours
+    }
+
+    fun setReminderStartHour(hour: Int) {
+        repository.setReminderStartHour(hour)
+        _reminderStartHour.value = hour
+    }
+
+    fun setReminderEndHour(hour: Int) {
+        repository.setReminderEndHour(hour)
+        _reminderEndHour.value = hour
     }
 
     init {
