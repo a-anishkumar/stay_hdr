@@ -54,8 +54,10 @@ class AIViewModel(
             _weatherState.value = newWeather
             
             val weight = repository.getUserWeight()
+            val height = repository.getUserHeight()
+            val age = repository.getUserAge()
             val activity = _activityState.value
-            val recommended = weatherService.calculateRecommendedWater(weight, activity, newWeather)
+            val recommended = weatherService.calculateRecommendedWater(weight, height, age, activity, newWeather)
             repository.updateDailyGoal(recommended)
         }
     }
@@ -66,8 +68,10 @@ class AIViewModel(
             _activityState.value = activityLevel
             
             val weight = repository.getUserWeight()
+            val height = repository.getUserHeight()
+            val age = repository.getUserAge()
             val weather = _weatherState.value
-            val recommended = weatherService.calculateRecommendedWater(weight, activityLevel, weather)
+            val recommended = weatherService.calculateRecommendedWater(weight, height, age, activityLevel, weather)
             repository.updateDailyGoal(recommended)
         }
     }

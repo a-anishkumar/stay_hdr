@@ -1,4 +1,4 @@
-﻿package com.example.hydraflowai.data.repository
+package com.example.hydraflowai.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -30,6 +30,15 @@ class WaterRepository(
     fun getUserWeight(): Float = prefs.getFloat("user_weight", 70.0f)
     fun getLocalWeather() = weatherService.getLocalWeather()
     fun setUserWeight(weight: Float) = prefs.edit().putFloat("user_weight", weight).apply()
+
+    fun getUserHeight(): Float = prefs.getFloat("user_height", 170.0f)
+    fun setUserHeight(height: Float) = prefs.edit().putFloat("user_height", height).apply()
+
+    fun getUserAge(): Int = prefs.getInt("user_age", 25)
+    fun setUserAge(age: Int) = prefs.edit().putInt("user_age", age).apply()
+
+    fun isOnboardingCompleted(): Boolean = prefs.getBoolean("onboarding_completed", false)
+    fun setOnboardingCompleted(completed: Boolean) = prefs.edit().putBoolean("onboarding_completed", completed).apply()
 
     fun getUserActivityLevel(): ActivityLevel {
         val name = prefs.getString("user_activity", ActivityLevel.SEDENTARY.name) ?: ActivityLevel.SEDENTARY.name
@@ -163,10 +172,15 @@ class WaterRepository(
         if (existing != null) {
             return@withContext existing.goalMl
         }
-        // Calculate recommendation based on current profile and weather
+        recalculateAndSaveDailyGoal(date)
+    }
+
+    suspend fun recalculateAndSaveDailyGoal(date: String = getTodayDateString()): Int = withContext(Dispatchers.IO) {
         val weather = WeatherInfo(28f, 60, "Sunny", "Summer") // Default fallback
         val recommended = weatherService.calculateRecommendedWater(
             weightKg = getUserWeight(),
+            heightCm = getUserHeight(),
+            ageYears = getUserAge(),
             activityLevel = getUserActivityLevel(),
             weather = weather
         )
@@ -284,6 +298,3 @@ class WaterRepository(
 enum class SyncState {
     IDLE, SYNCING, SUCCESS, ERROR
 }
-
-
-

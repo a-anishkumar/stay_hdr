@@ -1,4 +1,4 @@
-﻿package com.example.hydraflowai.ui.dashboard
+package com.example.hydraflowai.ui.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +16,8 @@ data class DashboardUiState(
     val completionPercent: Float = 0f,
     val todayLogs: List<IntakeRecord> = emptyList(),
     val weightKg: Float = 70.0f,
+    val heightCm: Float = 170.0f,
+    val ageYears: Int = 25,
     val weatherTempC: Float = 28.5f,
     val weatherSeason: String = "Summer",
     val weatherCondition: String = "Sunny"
@@ -27,6 +29,12 @@ class DashboardViewModel(
 
     private val _weight = MutableStateFlow(repository.getUserWeight())
     val weight = _weight.asStateFlow()
+
+    private val _height = MutableStateFlow(repository.getUserHeight())
+    val height = _height.asStateFlow()
+
+    private val _age = MutableStateFlow(repository.getUserAge())
+    val age = _age.asStateFlow()
 
     private val _presets = MutableStateFlow(repository.getCustomPresets())
     val presets = _presets.asStateFlow()
@@ -106,6 +114,8 @@ class DashboardViewModel(
             completionPercent = completion,
             todayLogs = intakes,
             weightKg = repository.getUserWeight(),
+            heightCm = repository.getUserHeight(),
+            ageYears = repository.getUserAge(),
             weatherTempC = weather.temperatureC,
             weatherSeason = weather.season,
             weatherCondition = weather.condition
@@ -134,12 +144,29 @@ class DashboardViewModel(
         }
     }
 
-    fun updateWeight(weight: Float) {
-        repository.setUserWeight(weight)
-        _weight.value = weight
-        // Recalculate today's goal if weight changes
+    fun updateWeight(weightVal: Float) {
+        repository.setUserWeight(weightVal)
+        _weight.value = weightVal
         viewModelScope.launch {
-            val rec = repository.getOrCreateDailyGoal()
+            val rec = repository.recalculateAndSaveDailyGoal()
+            repository.updateDailyGoal(rec)
+        }
+    }
+
+    fun updateHeight(heightVal: Float) {
+        repository.setUserHeight(heightVal)
+        _height.value = heightVal
+        viewModelScope.launch {
+            val rec = repository.recalculateAndSaveDailyGoal()
+            repository.updateDailyGoal(rec)
+        }
+    }
+
+    fun updateAge(ageVal: Int) {
+        repository.setUserAge(ageVal)
+        _age.value = ageVal
+        viewModelScope.launch {
+            val rec = repository.recalculateAndSaveDailyGoal()
             repository.updateDailyGoal(rec)
         }
     }
@@ -147,12 +174,8 @@ class DashboardViewModel(
     fun updateActivityLevel(activityLevel: ActivityLevel) {
         repository.setUserActivityLevel(activityLevel)
         viewModelScope.launch {
-            val rec = repository.getOrCreateDailyGoal()
+            val rec = repository.recalculateAndSaveDailyGoal()
             repository.updateDailyGoal(rec)
         }
     }
 }
-
-
-
-

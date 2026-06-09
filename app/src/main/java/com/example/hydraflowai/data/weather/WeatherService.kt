@@ -14,6 +14,8 @@ interface WeatherService {
     fun getLocalWeather(): Flow<WeatherInfo>
     fun calculateRecommendedWater(
         weightKg: Float,
+        heightCm: Float,
+        ageYears: Int,
         activityLevel: ActivityLevel,
         weather: WeatherInfo
     ): Int
@@ -40,12 +42,20 @@ class MockWeatherService : WeatherService {
 
     override fun calculateRecommendedWater(
         weightKg: Float,
+        heightCm: Float,
+        ageYears: Int,
         activityLevel: ActivityLevel,
         weather: WeatherInfo
     ): Int {
         val baseWater = weightKg * 35f // Weight * 35ml
+        val heightAdjustment = (heightCm - 170f) * 10f // Taller individuals need slightly more water
+        val ageAdjustment = when {
+            ageYears < 18 -> 150f // Growth adjustment
+            ageYears > 60 -> -100f // Lower muscle mass baseline water volume
+            else -> 0f
+        }
         
-        // Temperature adjustment: add 20ml for each degree above 22C, up to 1000ml
+        // Temperature adjustment: add 30ml for each degree above 22C, up to 1000ml
         val tempAdjustment = if (weather.temperatureC > 22f) {
             ((weather.temperatureC - 22f) * 30f).toInt().coerceAtMost(1000)
         } else {
@@ -66,6 +76,6 @@ class MockWeatherService : WeatherService {
 
         val activityAdjustment = activityLevel.adjustmentMl
 
-        return (baseWater + tempAdjustment + humidityAdjustment + seasonAdjustment + activityAdjustment).toInt().coerceAtLeast(1500)
+        return (baseWater + heightAdjustment + ageAdjustment + tempAdjustment + humidityAdjustment + seasonAdjustment + activityAdjustment).toInt().coerceAtLeast(1500)
     }
 }
