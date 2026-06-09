@@ -1,4 +1,4 @@
-# 💧 HydraFlow AI
+# 💧 Stay Hydrated
 
 [![Android Platform](https://img.shields.io/badge/Platform-Android%20%2F%20Wear%20OS-3DDC84?style=for-the-badge&logo=android)](https://developer.android.com/)
 [![Kotlin](https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
@@ -6,7 +6,7 @@
 [![Min SDK](https://img.shields.io/badge/Min%20SDK-26-orange?style=for-the-badge)](https://developer.android.com/about/versions/oreo)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
-> A state-of-the-art, AI-powered hydration tracking ecosystem designed to keep your health in perfect balance. Seamlessly integrated across Android Mobile, Wear OS Smartwatches, and Home Screen Widgets.
+> A state-of-the-art, Smart-powered hydration tracking ecosystem designed to keep your health in perfect balance. Seamlessly integrated across Android Mobile, Wear OS Smartwatches, and Home Screen Widgets.
 
 ---
 
@@ -15,7 +15,7 @@
 ### 📱 Android Mobile App
 *   **Dynamic AI Calibration**: Water intake goals are dynamically adjusted using a specialized algorithm incorporating your profile (Weight, Height, Age, Activity Level) and real-time local weather factors (Temperature, Humidity, Season).
 *   **Smart Logging Dashboard**: Quick-log predefined beverages (Water, Coffee, Tea, Juice, Soda) each with custom hydration indexing scores (e.g., caffeine offsets, sugar absorption delays).
-*   **AI Coach & Insights**: Predicts next optimal intake times, tracks dehydration risk levels, and generates personalized recommendations based on lifestyle choices.
+*   **Smart Coach & Insights**: Predicts next optimal intake times, tracks dehydration risk levels, and generates personalized recommendations based on lifestyle choices.
 *   **Interactive Analytics**: Explore weekly and monthly consumption trends with beautiful graphs and detailed charts.
 *   **Gamification**: Earn daily streaks, set custom target milestones, and unlock trophies for hitting hydration goals.
 *   **Persistent & Secure**: Seamless, lightweight database schema with SQLite-based architecture.
@@ -33,7 +33,7 @@
 
 ## 🛠️ Tech Stack & Architecture
 
-HydraFlow AI is built using the latest best practices in modern Android Development:
+Stay Hydrated is built using the latest best practices in modern Android Development:
 
 *   **Architecture**: MVVM (Model-View-ViewModel) pattern with cleanly separated repository layers.
 *   **UI Framework**: 100% Jetpack Compose for both Mobile and Wear OS modules.
@@ -46,7 +46,7 @@ HydraFlow AI is built using the latest best practices in modern Android Developm
 
 ---
 
-## 🧠 How the AI Goal Calculation Works
+## 🧠 How the Smart Goal Calculation Works
 
 The application does not use static guidelines. It employs a comprehensive dynamic water estimation formula:
 
@@ -71,9 +71,9 @@ $$\text{Daily Goal (ml)} = (\text{Weight}_{\text{kg}} \times 35) + \text{Height}
 stay_hdr/
 ├── app/                  # Android Mobile Application Module
 │   └── src/main/java/com/example/hydraflowai/
-│       ├── data/         # Repositories, SQLite DB, Weather Service, AI Engine
+│       ├── data/         # Repositories, SQLite DB, Weather Service, Recommendation Engine
 │       ├── theme/        # Custom Compose Theme & Harmonious Color Palette
-│       └── ui/           # Onboarding, Dashboard, Analytics, Streaks, AI Screens
+│       └── ui/           # Onboarding, Dashboard, Analytics, Streaks, Coach Screens
 ├── wear/                 # Wear OS Companion Module
 │   └── src/main/java/com/example/hydraflowai/wear/
 │       └── MainActivity  # Circular Wear OS UI & Quick-Log Sync Action

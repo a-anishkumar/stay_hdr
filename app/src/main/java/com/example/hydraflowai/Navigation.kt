@@ -16,8 +16,8 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.example.hydraflowai.data.repository.WaterRepository
-import com.example.hydraflowai.ui.ai.AIInsightsScreen
-import com.example.hydraflowai.ui.ai.AIViewModel
+import com.example.hydraflowai.ui.coach.CoachInsightsScreen
+import com.example.hydraflowai.ui.coach.CoachViewModel
 import com.example.hydraflowai.ui.analytics.AnalyticsScreen
 import com.example.hydraflowai.ui.analytics.AnalyticsViewModel
 import com.example.hydraflowai.ui.auth.LoginScreen
@@ -96,7 +96,7 @@ fun MainFlowScreen(app: HydraFlowApplication) {
     
     val dashboardViewModel: DashboardViewModel = viewModel { DashboardViewModel(app.repository) }
     val analyticsViewModel: AnalyticsViewModel = viewModel { AnalyticsViewModel(app.repository) }
-    val aiViewModel: AIViewModel = viewModel { AIViewModel(app.repository, app.aiRecommendationEngine, app.weatherService) }
+    val coachViewModel: CoachViewModel = viewModel { CoachViewModel(app.repository, app.recommendationEngine, app.weatherService) }
     val streakViewModel: StreakViewModel = viewModel { StreakViewModel(app.repository) }
     
     val repository = app.repository
@@ -142,7 +142,7 @@ fun MainFlowScreen(app: HydraFlowApplication) {
                 0 -> DashboardScreen(viewModel = dashboardViewModel)
                 1 -> AnalyticsScreen(viewModel = analyticsViewModel)
                 2 -> StreakScreen(viewModel = streakViewModel)
-                3 -> AIInsightsScreen(viewModel = aiViewModel)
+                3 -> CoachInsightsScreen(viewModel = coachViewModel)
                 4 -> SettingsScreen(repository = repository, dashboardViewModel = dashboardViewModel)
             }
         }

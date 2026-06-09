@@ -1,4 +1,4 @@
-package com.example.hydraflowai.data.ai
+package com.example.hydraflowai.data.coach
 
 import com.example.hydraflowai.data.local.entity.IntakeRecord
 import java.util.Calendar
@@ -10,7 +10,7 @@ data class HydrationInsights(
     val tips: List<String>
 )
 
-class AIRecommendationEngine {
+class RecommendationEngine {
 
     fun generateInsights(
         intakes: List<IntakeRecord>,

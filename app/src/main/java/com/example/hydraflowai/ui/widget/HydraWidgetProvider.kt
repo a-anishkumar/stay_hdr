@@ -87,7 +87,7 @@ class HydraWidgetProvider : AppWidgetProvider() {
                 completion < 90 -> "Coach: Good pace, keep it up!"
                 else -> "Coach: Goal met! Excellent job today."
             }
-            views.setTextViewText(R.id.widget_ai_tip, aiTip)
+            views.setTextViewText(R.id.widget_coach_tip, aiTip)
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }

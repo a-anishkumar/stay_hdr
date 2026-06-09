@@ -1,4 +1,4 @@
-package com.example.hydraflowai.ui.ai
+package com.example.hydraflowai.ui.coach
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import com.example.hydraflowai.data.weather.ActivityLevel
 
 @Composable
-fun AIInsightsScreen(
-    viewModel: AIViewModel
+fun CoachInsightsScreen(
+    viewModel: CoachViewModel
 ) {
     val state by viewModel.uiState.collectAsState()
     
@@ -141,7 +141,7 @@ fun AIInsightsScreen(
                     Spacer(modifier = Modifier.width(16.dp))
                     Column {
                         Text(
-                            text = "AI Suggested drinking pace",
+                            text = "Suggested drinking pace",
                             fontWeight = FontWeight.Bold,
                             fontSize = 13.sp,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)

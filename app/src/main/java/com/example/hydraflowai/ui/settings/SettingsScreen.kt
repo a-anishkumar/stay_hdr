@@ -368,7 +368,7 @@ fun SettingsScreen(
                     ) {
                         Icon(Icons.Default.Psychology, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text("Reset to AI Recommended Goal", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text("Reset to Recommended Goal", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

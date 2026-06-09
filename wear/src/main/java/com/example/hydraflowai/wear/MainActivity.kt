@@ -45,7 +45,7 @@ fun WearApp() {
             modifier = Modifier.padding(12.dp)
         ) {
             Text(
-                text = "HydraFlow AI",
+                text = "Stay Hydrated",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF38BDF8)

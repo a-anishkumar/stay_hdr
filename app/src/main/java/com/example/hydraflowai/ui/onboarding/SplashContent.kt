@@ -61,7 +61,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.WaterDrop,
-                contentDescription = "HydraFlow Logo",
+                contentDescription = "Stay Hydrated Logo",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(120.dp)
@@ -69,7 +69,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "HydraFlow AI",
+                text = "Stay Hydrated",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
