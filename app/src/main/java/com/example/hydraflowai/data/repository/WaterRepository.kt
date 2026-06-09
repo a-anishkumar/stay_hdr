@@ -1,4 +1,4 @@
-package com.example.hydraflowai.data.repository
+﻿package com.example.hydraflowai.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -28,6 +28,7 @@ class WaterRepository(
 
     // User profile state
     fun getUserWeight(): Float = prefs.getFloat("user_weight", 70.0f)
+    fun getLocalWeather() = weatherService.getLocalWeather()
     fun setUserWeight(weight: Float) = prefs.edit().putFloat("user_weight", weight).apply()
 
     fun getUserActivityLevel(): ActivityLevel {
@@ -35,6 +36,53 @@ class WaterRepository(
         return try { ActivityLevel.valueOf(name) } catch (e: Exception) { ActivityLevel.SEDENTARY }
     }
     fun setUserActivityLevel(activityLevel: ActivityLevel) = prefs.edit().putString("user_activity", activityLevel.name).apply()
+
+    // Custom presets state
+    fun getCustomPresets(): List<String> {
+        val set = prefs.getStringSet("custom_presets_set", setOf("Mug:350", "Bottle:750")) ?: setOf("Mug:350", "Bottle:750")
+        return set.toList()
+    }
+    fun addCustomPreset(name: String, ml: Int) {
+        val current = getCustomPresets().toMutableSet()
+        current.add("$name:$ml")
+        prefs.edit().putStringSet("custom_presets_set", current).apply()
+    }
+    fun deleteCustomPreset(presetStr: String) {
+        val current = getCustomPresets().toMutableSet()
+        current.remove(presetStr)
+        prefs.edit().putStringSet("custom_presets_set", current).apply()
+    }
+
+    // Reminders Configuration
+    fun isRemindersEnabled(): Boolean = prefs.getBoolean("reminders_enabled", true)
+    fun setRemindersEnabled(enabled: Boolean) = prefs.edit().putBoolean("reminders_enabled", enabled).apply()
+    
+    fun getReminderIntervalHours(): Float = prefs.getFloat("reminder_interval", 2.0f)
+    fun setReminderIntervalHours(hours: Float) = prefs.edit().putFloat("reminder_interval", hours).apply()
+
+    // Google Sign-In Configuration
+    fun isGoogleLoggedIn(): Boolean = prefs.getBoolean("google_is_logged_in", false)
+    fun getGoogleUserName(): String = prefs.getString("google_user_name", "") ?: ""
+    fun getGoogleUserEmail(): String = prefs.getString("google_user_email", "") ?: ""
+
+    fun getGoogleAccounts(): List<String> = listOf(
+        "anishkumar.a2006@gmail.com",
+        "anish.hydraflow@gmail.com",
+        "guest.hydraflow@gmail.com"
+    )
+
+    fun signInWithGoogle(email: String) {
+        val name = when (email) {
+            "anishkumar.a2006@gmail.com" -> "Anish Kumar"
+            "anish.hydraflow@gmail.com" -> "Anish Hydra"
+            else -> "Hydra Guest"
+        }
+        prefs.edit().putBoolean("google_is_logged_in", true).putString("google_user_name", name).putString("google_user_email", email).apply()
+    }
+
+    fun signOutFromGoogle() {
+        prefs.edit().putBoolean("google_is_logged_in", false).putString("google_user_name", "").putString("google_user_email", "").apply()
+    }
 
     fun getStreakRecoveriesLeft(): Int = prefs.getInt("recoveries_left", 1)
     fun decrementStreakRecoveries() = prefs.edit().putInt("recoveries_left", (getStreakRecoveriesLeft() - 1).coerceAtLeast(0)).apply()
@@ -236,3 +284,6 @@ class WaterRepository(
 enum class SyncState {
     IDLE, SYNCING, SUCCESS, ERROR
 }
+
+
+

@@ -1,4 +1,4 @@
-package com.example.hydraflowai.ui.dashboard
+﻿package com.example.hydraflowai.ui.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,7 +15,10 @@ data class DashboardUiState(
     val remainingMl: Int = 2000,
     val completionPercent: Float = 0f,
     val todayLogs: List<IntakeRecord> = emptyList(),
-    val weightKg: Float = 70.0f
+    val weightKg: Float = 70.0f,
+    val weatherTempC: Float = 28.5f,
+    val weatherSeason: String = "Summer",
+    val weatherCondition: String = "Sunny"
 )
 
 class DashboardViewModel(
@@ -24,6 +27,60 @@ class DashboardViewModel(
 
     private val _weight = MutableStateFlow(repository.getUserWeight())
     val weight = _weight.asStateFlow()
+
+    private val _presets = MutableStateFlow(repository.getCustomPresets())
+    val presets = _presets.asStateFlow()
+
+    private val _isLoggedIn = MutableStateFlow(repository.isGoogleLoggedIn())
+    val isLoggedIn = _isLoggedIn.asStateFlow()
+
+    private val _userName = MutableStateFlow(repository.getGoogleUserName())
+    val userName = _userName.asStateFlow()
+
+    private val _userEmail = MutableStateFlow(repository.getGoogleUserEmail())
+    val userEmail = _userEmail.asStateFlow()
+
+    val googleAccounts = repository.getGoogleAccounts()
+
+    fun signIn(email: String) {
+        repository.signInWithGoogle(email)
+        _isLoggedIn.value = true
+        _userName.value = repository.getGoogleUserName()
+        _userEmail.value = repository.getGoogleUserEmail()
+    }
+
+    fun signOut() {
+        repository.signOutFromGoogle()
+        _isLoggedIn.value = false
+        _userName.value = ""
+        _userEmail.value = ""
+    }
+
+    private val _remindersEnabled = MutableStateFlow(repository.isRemindersEnabled())
+    val remindersEnabled = _remindersEnabled.asStateFlow()
+
+    private val _reminderInterval = MutableStateFlow(repository.getReminderIntervalHours())
+    val reminderInterval = _reminderInterval.asStateFlow()
+
+    fun addPreset(name: String, ml: Int) {
+        repository.addCustomPreset(name, ml)
+        _presets.value = repository.getCustomPresets()
+    }
+
+    fun deletePreset(presetStr: String) {
+        repository.deleteCustomPreset(presetStr)
+        _presets.value = repository.getCustomPresets()
+    }
+
+    fun setRemindersEnabled(enabled: Boolean) {
+        repository.setRemindersEnabled(enabled)
+        _remindersEnabled.value = enabled
+    }
+
+    fun setReminderInterval(hours: Float) {
+        repository.setReminderIntervalHours(hours)
+        _reminderInterval.value = hours
+    }
 
     init {
         // Ensure today's goal is computed and cached in the DB
@@ -34,8 +91,9 @@ class DashboardViewModel(
 
     val uiState: StateFlow<DashboardUiState> = combine(
         repository.getTodayIntakes(),
-        repository.getDailyGoalFlow()
-    ) { intakes, dailyGoal ->
+        repository.getDailyGoalFlow(),
+        repository.getLocalWeather()
+    ) { intakes, dailyGoal, weather ->
         val totalHydrated = intakes.sumOf { (it.amountMl * it.hydrationScore).toInt() }
         val goal = dailyGoal?.goalMl ?: repository.getOrCreateDailyGoal()
         val remaining = (goal - totalHydrated).coerceAtLeast(0)
@@ -47,7 +105,10 @@ class DashboardViewModel(
             remainingMl = remaining,
             completionPercent = completion,
             todayLogs = intakes,
-            weightKg = repository.getUserWeight()
+            weightKg = repository.getUserWeight(),
+            weatherTempC = weather.temperatureC,
+            weatherSeason = weather.season,
+            weatherCondition = weather.condition
         )
     }.stateIn(
         scope = viewModelScope,
@@ -91,3 +152,7 @@ class DashboardViewModel(
         }
     }
 }
+
+
+
+
